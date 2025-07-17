@@ -15,6 +15,8 @@ We aim to make the resource:
 
 Not sure where to start? Have a look at the last topic in the sidebar, `Contribute` for a dashboard with resources / reviews we'd love to have. If you have your own idea, go ahead as follow:
 
+**💡 Need help finding the right folder?** Check out the [Full Site Map](./docs/full-sitemap.md) for a complete exploded view of all content and folder structure.
+
 1. Find the correct folder inside [`/docs/`](./docs)
 2. Copy the [`docs/.template.md`](./docs/.template.md) into that folder
 3. Rename the file (e.g., `overview.md`, `setup-guide.md`, etc.). Attention: `intro.md` and `index.md are reserved.

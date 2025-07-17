@@ -29,6 +29,10 @@ You can explore the content in a few ways:
 Start here if you're new to Java + AI, or want a guided path:  
 → [`/docs/getting-started`](./docs/00-getting-started)
 
+### 🗺️ Complete Content Overview  
+Want to see everything at once? Explore the full exploded structure:  
+→ [`Full Site Map`](./docs/full-sitemap.md)
+
 ### 🔍 Flatmaps (Clickable Topic Diagrams)  
 Each folder or topic area comes with a visual **flatmap** — a clickable diagram showing what's inside, how it relates, and what's missing.
 
