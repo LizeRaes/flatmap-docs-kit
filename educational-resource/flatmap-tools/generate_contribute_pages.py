@@ -388,10 +388,13 @@ def walk_docs():
                 collaboration = frontmatter.get("collaboration", "")
                 author = frontmatter.get("author", "")
                 
-                # Check if author exists (handle string format: "Name" (@github), "Name" (@github))
+                # Check if author exists (handle both string and list formats)
                 has_author = False
                 if isinstance(author, str) and author.strip():
                     has_author = True
+                elif isinstance(author, list) and len(author) > 0:
+                    # Check if any author in the list is not empty
+                    has_author = any(isinstance(a, str) and a.strip() for a in author)
                 
                 article = {
                     'abs_path': abs_path,

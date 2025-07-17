@@ -2,7 +2,7 @@ import os
 import re
 import json
 import datetime
-from util import parse_frontmatter, normalize_id, strip_order_prefix, get_section_title, build_url_path, extract_title, parse_ymd_date, get_file_modification_date_as_date, make_breadcrumb_to_article, make_breadcrumb_to_contribute_page, make_dashboard_breadcrumb_link, make_full_breadcrumb, load_style_config, get_docs_root_dir, extract_tags_from_frontmatter, get_docs_url
+from util import parse_frontmatter, normalize_id, strip_order_prefix, get_section_title, build_url_path, extract_title, parse_ymd_date, get_file_modification_date_as_date, make_breadcrumb_to_article, make_breadcrumb_to_contribute_page, make_dashboard_breadcrumb_link, make_full_breadcrumb, load_style_config, get_docs_root_dir, extract_tags_from_frontmatter, get_docs_url, get_repository_link_from_config
 
 ROOT_DIR = get_docs_root_dir()
 OUTPUT_DIR = os.path.join(ROOT_DIR, "99-contribute")
@@ -57,30 +57,49 @@ def get_author_info(author_field):
 def create_location_breadcrumb(rel_path, article_title):
     """Create a breadcrumb showing the article's location, matching the contribute page format."""
     parts = rel_path.split(os.sep)
-    if parts[-1].endswith('.md'):
-        parts[-1] = parts[-1][:-3]
+    filename = parts[-1] if parts else ""
     
-    if len(parts) > 1:
-        location_parts = []
-        for i in range(len(parts)-1):
-            folder_path = os.path.join(ROOT_DIR, *parts[:i+1])
-            folder_title = get_section_title(folder_path)
-            url_path = build_url_path(parts[:i+1])
-            docs_url = get_docs_url(url_path)
-            location_parts.append(f'<a href="{docs_url}" target="_blank" rel="noopener noreferrer">{folder_title}</a>')
-        # Add the article title as the final part
-        url_path = build_url_path(parts)
-        docs_url = get_docs_url(url_path)
-        location_parts.append(f'<a href="{docs_url}" target="_blank" rel="noopener noreferrer">{article_title}</a>')
-        location = " > ".join(location_parts)
+    # Handle index.md files specially - link to folder, not file
+    if filename == "index.md":
+        # Remove the index.md part and link to the folder
+        parts = parts[:-1]
+        if len(parts) > 0:
+            location_parts = []
+            for i in range(len(parts)):
+                folder_path = os.path.join(ROOT_DIR, *parts[:i+1])
+                folder_title = get_section_title(folder_path)
+                url_path = build_url_path(parts[:i+1])
+                docs_url = get_docs_url(url_path)
+                location_parts.append(f'<a href="{docs_url}" target="_blank" rel="noopener noreferrer">{folder_title}</a>')
+            location = " > ".join(location_parts)
+        else:
+            location = "Root"
     else:
-        location = "Root"
+        # Handle regular files
+        if parts[-1].endswith('.md'):
+            parts[-1] = parts[-1][:-3]
+        
+        if len(parts) > 1:
+            location_parts = []
+            for i in range(len(parts)-1):
+                folder_path = os.path.join(ROOT_DIR, *parts[:i+1])
+                folder_title = get_section_title(folder_path)
+                url_path = build_url_path(parts[:i+1])
+                docs_url = get_docs_url(url_path)
+                location_parts.append(f'<a href="{docs_url}" target="_blank" rel="noopener noreferrer">{folder_title}</a>')
+            # Add the article title as the final part
+            url_path = build_url_path(parts)
+            docs_url = get_docs_url(url_path)
+            location_parts.append(f'<a href="{docs_url}" target="_blank" rel="noopener noreferrer">{article_title}</a>')
+            location = " > ".join(location_parts)
+        else:
+            location = "Root"
     
     return location
 
 def create_discussion_link(title, author_handle, style_config):
     """Create a GitHub discussion link with pre-filled content."""
-    repo_link = style_config.get("repository_link", "https://github.com/YOUR_ORG/YOUR_REPO")
+    repo_link = get_repository_link_from_config()
     discussion_url = f"{repo_link}/discussions/new"
     
     # URL encode the parameters
